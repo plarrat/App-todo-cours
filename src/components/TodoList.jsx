@@ -5,15 +5,14 @@ export default function TodoList(){
     const [input, setInput] = useState("test");
     const [rech, setRech] = useState("");
     const [todos, setTodos] = useState([]);
-    const [todosFiltre, setTodosFiltre] = useState([]);
+   
    
     function addTodo(){
         let tmp = [...todos];
         tmp.push(input);
         setTodos(tmp);
-        setTodosFiltre(tmp);
         setInput("");
-        rechercher(rech);
+       
     }
     
     function supprimer(todo){
@@ -21,22 +20,21 @@ export default function TodoList(){
         const indice = todos.indexOf(todo);
         if(indice > -1) tmp.splice(indice,1);
         setTodos(tmp);
-        setTodosFiltre(tmp);
-        rechercher(rech);
     }
 
-    function rechercher(strRech){
-        setRech(strRech);
+    function rechercher(strRech, liste){
         let tmpRech = strRech.toLowerCase();
-        let res = todos.filter(todo => {
+
+        
+        let res = liste.filter(todo => {
             let lowerTodo = todo.toLowerCase();
             if(lowerTodo.indexOf(tmpRech) > - 1) return todo;
         });
 
-        setTodosFiltre(res)
+        return(res)
     }
 
-    let displayTodos = todosFiltre.map((todo, i)=>{
+    let displayTodos = rechercher(rech, todos).map((todo, i)=>{
         return (
             <li key={"todos-" + i} className="list-group-item  d-flex justify-content-between align-items-center">
                 {todo}
@@ -63,7 +61,7 @@ export default function TodoList(){
             </div>
 
             <div className="input-group mb-3">
-                <input type="search" value={rech} onChange={(e)=>{rechercher(e.target.value)}} className="form-control" placeholder="Rechercher ..."  />
+                <input type="search" value={rech} onChange={(e)=>{setRech(e.target.value)}} className="form-control" placeholder="Rechercher ..."  />
                 <button className="btn btn-outline-info" type="button"> Rechercher </button>
             </div>
 
