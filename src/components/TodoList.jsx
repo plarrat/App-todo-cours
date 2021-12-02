@@ -1,12 +1,12 @@
 import {useState} from 'react';
 import "./TodoList.css";
+import Todo from "./Todo";
 
 export default function TodoList(){
     const [input, setInput] = useState("test");
     const [rech, setRech] = useState("");
     const [todos, setTodos] = useState([]);
-   
-   
+ 
     function addTodo(){
         let tmp = [...todos];
         tmp.push(input);
@@ -24,8 +24,6 @@ export default function TodoList(){
 
     function rechercher(strRech, liste){
         let tmpRech = strRech.toLowerCase();
-
-        
         let res = liste.filter(todo => {
             let lowerTodo = todo.toLowerCase();
             if(lowerTodo.indexOf(tmpRech) > - 1) return todo;
@@ -36,13 +34,7 @@ export default function TodoList(){
 
     let displayTodos = rechercher(rech, todos).map((todo, i)=>{
         return (
-            <li key={"todos-" + i} className="list-group-item  d-flex justify-content-between align-items-center">
-                {todo}
-                <span>
-                    <button onClick={()=>supprimer(todo)} className="btn btn-sm btn-danger">Supprimer</button>
-
-                </span>
-            </li>
+            <Todo key={"todos-"+i} titre={todo} supprimer={supprimer} />
         )
     });
 
