@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import "./TodoList.css";
 import Todo from "./Todo";
 
@@ -6,11 +6,26 @@ export default function TodoList(){
     const [input, setInput] = useState("test");
     const [rech, setRech] = useState("");
     const [todos, setTodos] = useState([]);
- 
+    
+    useEffect(()=>{
+        let todosBDD = localStorage.getItem("todos");
+        if(todosBDD === null) {
+            localStorage.setItem("todos", JSON.stringify([]));
+            todosBDD = [];
+        }
+        setTodos(JSON.parse(todosBDD))
+    }, []);
+
+    useEffect(()=>{
+        localStorage.setItem("todos",JSON.stringify(todos));
+    }, [todos]);
+
     function addTodo(){
         let tmp = [...todos];
-        tmp.push(input);
-        setTodos(tmp);
+        if(input.trim().length > 0){
+            tmp.push(input);
+            setTodos(tmp);
+        }
         setInput("");
        
     }
@@ -37,7 +52,7 @@ export default function TodoList(){
             <Todo key={"todos-"+i} titre={todo} supprimer={supprimer} />
         )
     });
-
+    
     return (
         <div>
             <h1>Faire ses devoirs 
@@ -51,12 +66,13 @@ export default function TodoList(){
                 <input type="text" value={input} onChange={(e)=>{setInput(e.target.value)}} className="form-control" placeholder="Saisir une todo"  />
                 <button onClick={addTodo} className="btn btn-outline-info" type="button"> + </button>
             </div>
-
-            <div className="input-group mb-3">
-                <input type="search" value={rech} onChange={(e)=>{setRech(e.target.value)}} className="form-control" placeholder="Rechercher ..."  />
-                <button className="btn btn-outline-info" type="button"> Rechercher </button>
-            </div>
-
+            
+            { todos.length > 0 &&
+                <div className="input-group mb-3">
+                    <input type="search" value={rech} onChange={(e)=>{setRech(e.target.value)}} className="form-control" placeholder="Rechercher ..."  />
+                    <button className="btn btn-outline-info" type="button"> Rechercher </button>
+                </div>
+            }
             <ul className="list-group list-group-flush">
                 {displayTodos}
             </ul>
